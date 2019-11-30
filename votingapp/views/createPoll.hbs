@@ -1,0 +1,58 @@
+<h2>Create a new Poll</h2>
+
+<div class="classCenter">
+    {{# if alreadyAsked}}
+        <div>Error: Question already exist</div>
+    {{/if}}
+
+    <label>Question: </label><input id="idQuestion" placeholder="Question"><br/>
+    <label>Choice:   </label><input class="inputOptions" placeholder="Choice 1"><br/>
+    <label>Choice:   </label><input class="inputOptions" placeholder="Choice 2"><br/>
+    <div id="divAddOption"></div>
+    <button class="displayInputForm" onclick="buttonAddOption()">Add More Options</button>
+    <button class="displayInputForm" onclick="buttonSubmit()">submit</button>
+
+    <form id="idCreatePoll" action="/createPollForm" method="POST">
+        <input type="text" name="objectCreatePoll" id="idInput" style="display:none"/><br/>
+    </form>
+</div>
+
+<script>
+    //Insert addition input
+    function buttonAddOption(){
+        document.getElementById('divAddOption').insertAdjacentHTML("beforebegin", "<label>Choice: </label><input class='inputOptions'><br/>");
+    }
+
+    //submit
+    function buttonSubmit(){
+        let holdObject = {}, holdQuestion = "", holdOptions = {};
+        let success = true;
+
+        //Grab all text from class inputOptions
+        var x = document.querySelectorAll("[class='inputOptions']");
+        for (var i=0;i<x.length;i++) {
+            if(x[i].value == ""){
+                success = false;
+                break;
+            }
+            holdOptions[x[i].value]= 0;
+        }
+
+        //Check if there is an empty field
+        if(success){
+            holdQuestion = document.getElementById('idQuestion').value
+            holdObject = {
+                Question: holdQuestion,
+                Options: holdOptions,
+            }
+            document.getElementById('idInput').value = JSON.stringify(holdObject);
+
+            //Manually call form submit button
+            document.getElementById('idCreatePoll').submit();
+        }
+        else{
+            alert("Fields cannot be empty");
+        }
+    }
+
+</script>

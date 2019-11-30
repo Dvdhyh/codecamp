@@ -1,0 +1,30 @@
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+<form action="r/enterCityForm" id="idSubmit" method="post">
+    <input id="idInput" name="theCity" placeholder="Enter your city" value="">
+</form>
+<button onclick="funcSubmit()">search</button>
+
+
+<script>
+
+    if(typeof(Storage) !== "undefined") {
+        if (sessionStorage.inputCity != null) {
+            document.getElementById("idInput").value = sessionStorage.inputCity;
+
+            document.getElementById("idSubmit").submit();
+        }
+    }
+
+    //When the submit button is pressed
+    let funcSubmit = function(){
+        if(typeof(Storage) !== "undefined") {
+            //session store last searched
+            sessionStorage.inputCity = document.getElementById("idInput").value
+        }
+        //Call form submit
+        document.getElementById("idSubmit").submit();
+    }
+
+</script>

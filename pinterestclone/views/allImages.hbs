@@ -1,0 +1,24 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+<h2>List of all Images</h2>
+<hr/>
+
+{{# each hbsVar }}
+    {{# each this.holdAllRecent }}
+        <div class="formItem">
+            <div>{{this.theTitle}}</div>
+            <img src="{{this.theImage}}" id="{{this.theID}}" onerror="brokenImageLink({{this.theID}})"></img>
+            <form action="/visitUserForm" method="post">
+                <input type="text" name="thePostedUser" value="{{this.thePostedUser}}" style="display:none"/>
+                Posted: <input type="submit" value="{{this.thePostedUser}}" class="removeDecoration"/>
+            </form>
+        </div>
+    {{/each}}
+{{/each}}
+
+<script>
+    var brokenImageLink = function(imgID){
+        document.getElementById(imgID).src = "https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150";
+    }
+</script>

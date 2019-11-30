@@ -1,0 +1,17 @@
+<h2>List of all books</h2>
+<hr/>
+<h3>Select a Book</h3>
+
+<div class="formListItems">
+    {{# each hbsVar }}
+        <div class="formItem">
+            <form action="/selectedbookForm" method="POST">
+                <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                <input type="text" name="theList" value="all" style="display:none"/>
+                <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+            </form>
+            <p style="text-align:center">{{this.theTitle}}</p>
+        </div>
+    {{/each}}
+</div>

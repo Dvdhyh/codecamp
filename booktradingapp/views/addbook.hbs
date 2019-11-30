@@ -1,0 +1,11 @@
+<h2>Add a book to my booklist</h2>
+
+<div class="classCenter">
+{{# if hbsVar}}
+    <div class="errorMessage">Book is already in your collection</div>
+{{/if}}
+<form action="/addBookForm" method="POST">
+    <input type="text" name="theTitle" placeholder="Title"/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+</div>

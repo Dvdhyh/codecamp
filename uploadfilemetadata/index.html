@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<link rel="shortcut icon" href="favicon.ico">
+	</head>
+	<body>
+		<h3>Free code Camp File Metadata:</h3>
+	  
+		<p>Submit a file to upload to view its file size in kb</p>
+      
+		<!--"http://127.0.0.1:8000/file_upload"-->
+		
+		
+		<form action="https://ffc-filesize.herokuapp.com/file_upload" method="POST" enctype="multipart/form-data">
+			<input type="file" name="theFile" size="50" />
+			<br />
+			<input type="submit" value="Upload File" />
+		</form>
+      
+	</body>
+</html>

@@ -1,0 +1,12 @@
+<h2>Remove a Book</h2>
+
+{{# each hbsVar.showselectedbook.bookDetails }}
+    {{#ifCond this.theOwner '==' ../hbsVar.currentUser}}
+        <div class="formItem">
+        <form action="/removebookForm" method="POST">
+            <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+            <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+        </form>
+        </div>
+    {{/ifCond}}
+{{/each}}

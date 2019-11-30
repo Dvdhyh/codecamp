@@ -1,0 +1,19 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<h2>Remove a Image</h2>
+
+{{# each hbsVar }}
+    <div class="formItem">
+        <div>{{this.theTitle}}</div>
+        <form action="/removeImageForm" method="POST">
+            <input type="text" name="theID" value="{{this.theID}}" style="display:none"/>
+            <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" id="{{this.theID}}" onerror="brokenImageLink({{this.theID}})"/>
+        </form>
+        <p>{{this.thePostedUser}}</p>
+    </div>
+{{/each}}
+
+<script>
+    var brokenImageLink = function(imgID){
+        document.getElementById(imgID).src = "https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150";
+    }
+</script>

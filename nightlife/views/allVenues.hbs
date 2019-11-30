@@ -1,0 +1,19 @@
+<h2>List of all Venues</h2>
+<hr/>
+<div>
+    {{hbsVar.city}}
+    <hr/>
+
+    {{#each hbsVar.venues}}
+        <div class="displayElement">
+            <div>{{this.name}}</div> <div>{{this.address}}</div>
+            <form action="attendForm" method="post">
+                <input type="text" name="cityName" value={{../hbsVar.city}} style="display: none">
+                <input type="text" name="cityId" value={{this.id}} style="display: none">
+                Number of People Going: <input type="submit" value={{this.attendence}}>
+            </form>
+        </div>
+        <br/>
+    {{/each}}
+</div>
+<br/><br/><br/><br/>

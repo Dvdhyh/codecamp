@@ -1,0 +1,16 @@
+<div class="createDelete" style="display:flex; justify-content: space-around;">
+<a class="buttonA" href="createPoll">Create Poll</a>
+<a class="buttonA" href="deletePoll">Delete Poll</a>
+</div>
+
+<h2>A list of my polls</h2>
+<h4>Select a Poll</h4>
+
+<div class="classCenter">
+{{# each showPoll }}
+    <form action="/selectedPollForm" method="POST">
+        <input type="text" name="theQuestion" value="{{this._id}}" style="display:none"/>
+        <input class="displayInputForm" type="submit" value="{{this.question}}"/>
+    </form>
+{{/each}}
+</div>

@@ -1,0 +1,54 @@
+<h2>Selected Book</h2>
+<div class="classCenter">
+    <p>Title: {{hbsVar.showselectedbook.theTitle}}</p>
+    <img src="{{hbsVar.showselectedbook.theImage}}" alt="Image is unavailable"></img>
+
+    {{#ifCond hbsVar.currentUser '==' hbsVar.showselectedbook.theOwner}}
+        <p>Owner: {{hbsVar.showselectedbook.theOwnerUser}} (I am the owner)</p>
+    {{else}}
+        <p>Owner: {{hbsVar.showselectedbook.theOwnerUser}}</p>
+    {{/ifCond}}
+
+    {{#ifCond hbsVar.showselectedbook.askReturn '==' "OwnerRequested"}}
+        <p>Owner has requested the return of their book. Please return at your earilest convenience</p>
+    {{/ifCond}}
+
+
+    {{#ifCond hbsVar.currentUser '!=' hbsVar.showselectedbook.theOwner}}
+        {{#ifCond hbsVar.showselectedbook.theStatus '==' ""}}
+            {{#ifCond hbsVar.showselectedbook.theRequestUser 'findStr' hbsVar.currentUser}}
+                <form action="/cancelRequestForm" method="POST">
+                    <input type="text" name="theTitle" value="{{hbsVar.showselectedbook._id}}" style="display:none"/>
+                    <input type="submit" value="Cancel Request"/>
+                </form>
+            {{else}}
+                <form action="/requestBookForm" method="POST">
+                    <input type="text" name="theTitle" value="{{hbsVar.showselectedbook._id}}" style="display:none"/>
+                    <input type="submit" value="Request book"/>
+                </form>
+            {{/ifCond}}
+        {{/ifCond}}
+
+        {{#ifCond hbsVar.showselectedbook.theStatus '!=' ""}}
+            <form action="/returnForm" method="POST">
+                <input type="text" name="theTitle" value="{{hbsVar.showselectedbook._id}}" style="display:none"/>
+                <input type="submit" value="Return book to owner"/>
+            </form>
+        {{/ifCond}}
+    {{else}}
+        {{#ifCond hbsVar.showselectedbook.theStatus '==' ""}}
+            {{#ifCond hbsVar.showselectedbook.theRequestUser "notempty" 0}}
+                <form action="/pickForm" method="POST">
+                    <input type="text" name="theTitle" value="{{hbsVar.showselectedbook._id}}" style="display:none"/>
+                    <input type="submit" value="Book has been Requested"/>
+                </form>
+            {{/ifCond}}
+        {{else}}
+            <form action="/requestReturnForm" method="POST">
+                <input type="text" name="theTitle" value="{{hbsVar.showselectedbook._id}}" style="display:none"/>
+                <input type="text" name="theRequestUser" value="{{hbsVar.showselectedbook.theRequestUser}}" style="display:none"/>
+                <input type="submit" value="Request return your book"/>
+            </form>
+        {{/ifCond}}
+    {{/ifCond}}
+</div>

@@ -1,0 +1,70 @@
+ul{
+    list-style-type: none;
+    background-color: #00BB00;
+}
+li{
+    display: inline-block;
+    padding-top: 25px;
+    height:42px;
+    text-align: center;
+}
+li a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    padding: 25px 25px;
+}
+li a:hover{
+    background-color: #008800;
+}
+h1{
+    text-align: center;
+}
+input{
+    width:200px;
+}
+
+img {
+    max-width: 150px;
+    max-height: 200px;
+}
+
+.classCenter{
+    text-align: center;
+    width: 50%;
+    margin: auto;
+}
+
+.formItem{
+    padding:10px;
+    text-align: center;
+    display: inline-block;
+    border: 2px solid green;
+    margin-top: 3px;
+    max-width: 200px;
+}
+
+.buttonA{
+    padding: 10px;
+    border: 2px solid green;
+    align: center;
+}
+
+.inputImage{
+    max-width: 150px;
+    max-height: 200px;
+}
+
+footer {
+    background-color: lightgreen;
+    width: 98%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    position: fixed;
+    max-height: 2px;
+}
+
+footer:hover {
+    max-height: 70px;
+}

@@ -1,0 +1,47 @@
+ul{
+    list-style-type: none;
+    background-color: rgba(0, 200, 255, 1);
+}
+li{
+    display: inline-block;
+    padding-top: 25px;
+    height:45px;
+    text-align: center;
+}
+li a {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    padding: 25px 25px;
+}
+li a:hover{
+    background-color: rgba(0, 0, 255, 1);
+}
+
+h1{
+    text-align: center;
+}
+
+input{
+    width:100px;
+}
+
+.displayElement{
+    background-color: #FF9900;
+}
+
+#buttonChangeCity{
+    border: none;
+    background-color: rgba(0, 200, 255, 1);
+    padding: 25px 25px;
+}
+
+#buttonChangeCity:hover{
+    background-color: rgba(0, 0, 255, 1);
+}
+
+footer {
+    background-color: lightblue;
+    width: 98%;
+    position: fixed;
+    bottom: 0;
+}

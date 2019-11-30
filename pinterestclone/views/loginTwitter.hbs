@@ -1,0 +1,11 @@
+<h2>Please wait while Logging in</h2>
+
+<form action="loginForm" id="formTwitter" method="POST">
+    <input type="text" name="username" placeholder="username" value="{{hbsVar.username}}" style="display:none"/>
+    <input type="text" name="password" placeholder="password" value="{{hbsVar.password}}" style="display:none"/>
+    <input type="submit" value="Submit"/>
+</form>
+
+<script>
+    document.getElementById("formTwitter").submit();
+</script>

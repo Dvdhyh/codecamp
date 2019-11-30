@@ -1,0 +1,35 @@
+<html>
+<head>
+  <link rel="stylesheet" href="../mycss.css">
+</head>
+<body>
+    <ul>
+        <li>NIGHT LIFE</li>
+        <button id="buttonChangeCity" onclick="clearSessionData()">CHANGE CITY</button>
+        <li style="float:right"><a href="../l/twitterLogin">LOG IN</a></li>
+    </ul>
+    <h1 style="clear:both">Free Code Camp - Night Life</h1>
+
+{{{body}}}
+
+<footer>By David Huynh <br/>
+    Github:https://github.com/Dvdhyh/nightlife<br/>
+    Heroku:https://ffc-nightlife.herokuapp.com/
+</footer>
+</body>
+</html>
+
+<script type="text/javascript">
+    //When the submit button is pressed
+    let clearSessionData = function(){
+        console.log("kokok");
+
+        if(typeof(Storage) !== "undefined") {
+            //session store last searched
+            sessionStorage.clear();
+        }
+
+        window.location = "/"
+    }
+
+</script>

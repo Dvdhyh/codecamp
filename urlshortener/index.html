@@ -1,0 +1,35 @@
+
+<html>
+<head>
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+
+<body>
+    <h3>Free Code Camp URL Shortener</h3>
+    <br />
+
+    <div>
+        <p>When you pass a valid url to the end of
+        https://ffc-urlshortener.herokuapp.com/ it will pass a JSON Object with the original
+		url and a shorten url to be a shortcut </p>
+
+        <p>If it's a valid url string, when I visit the shorten url it will redirect me to my original link</p>
+
+        <p>However if the url is invalid, the JSON object will display text invalid URL</p>
+        <br/>
+		<p>"newlocal" uses a JSON object to hold data. Data will be lost when the server turns off.</p>
+		<p>"new" uses a mongoDB to save data permanently</p>
+		<br>
+		<p>Example:</p>
+        <p>https://ffc-urlshortener.herokuapp.com/newlocal/https://www.google.com</p>
+		<p>https://ffc-urlshortener.herokuapp.com/new/https://www.google.com</p>
+		<br/>
+        <p>{ "original": https://www.google.com, "shorten":https://ffc-urlshortener.herokuapp.com/getlocal0 }</p>
+		<p>{ "original": https://www.google.com, "shorten":https://ffc-urlshortener.herokuapp.com/get0 }</p>
+        <br/>
+		<p>or</p>
+        <p>URL is invalid</p>
+    </div>
+
+</body>
+</html>

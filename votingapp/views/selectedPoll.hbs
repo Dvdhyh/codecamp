@@ -1,0 +1,91 @@
+<h2>Selected Poll</h2>
+
+<div style="display:flex;" class="classCenter">
+    <div style="margin-right:100px">
+        <p>Question: {{showSelectedPoll.question}}</p>
+
+        {{# each showSelectedPoll.options}}
+            {{@key}}: {{this}}
+            <form action="/AddScoreForm" method="POST">
+                <input type="text" name="theQuestion" value="{{../showSelectedPoll._id}}" style="display:none"/>
+                <input type="text" name="theScore" value="{{@key}}" style="display:none"/>
+                <input class="displayInputForm" type="submit" value="{{@key}}"/>
+            </form>
+        {{/each}}
+
+        {{# if loggedOn }}
+            <form id="idAddOption" action="/addOptionForm" method="POST">
+                <input type="text" name="theQuestion" value="{{showSelectedPoll._id}}" style="display:none"/>
+                <input type="text" id="idnewOption" name="newOption" value="" placeholder="Insert new option text"/>
+            </form>
+
+            <button class="displayInputForm" onclick="buttonSubmit()">Add new option</button>
+        {{/if}}
+    </div>
+    <div id="d3body"></div>
+</div>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+    var dataArray = [];
+    {{# each showSelectedPoll.options}}
+        dataArray.push({{this}})
+    {{/each}}
+
+    //submit
+    function buttonSubmit(){
+        let holdChoice = document.getElementById('idnewOption').value || "";
+        let success = true;
+
+        if(holdChoice == ""){
+            success = false;
+        }
+
+        //Check if there is an empty field
+        if(success){
+            //Manually call form submit button
+            document.getElementById('idAddOption').submit();
+        }
+        else{
+            alert("Fields cannot be empty");
+        }
+    }
+
+    /*d3*/
+
+    var theRadius = 100;
+
+    var colour = d3.scaleLinear()
+        .domain([0, 10])
+        .range(["#FF0000", "#0000FF"]);
+
+    var svg = d3.select("#d3body").append("svg")
+        .attr("wdith", 100)
+        .attr("height", 200);
+
+    var group = svg.append("g")
+		.attr("transform", "translate(100, 100)");
+
+    var arc1 = d3.arc()
+        .innerRadius(0)
+        .outerRadius(theRadius);
+
+    var pie1 = d3.pie()
+        .value(function(d){return d;});
+
+    var arc2 = group.selectAll(".arc")
+        .data(pie1(dataArray))
+        .enter()
+        .append("g")
+            .attr("class", "arc1");
+
+    arc2.append("path")
+        .attr("d", arc1)
+        .attr("fill", function(d){return colour(d.data);});
+
+    arc2.append("text")
+        .attr("transform", function(d){return "translate("+arc1.centroid(d)+")";})
+        .attr("text-anchor", "middle")
+        .attr("font-size","1.0cm")
+        .text(function(d){return d.data;});
+
+</script>

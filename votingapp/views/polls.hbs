@@ -1,0 +1,14 @@
+<h2>List of polls</h2>
+<hr/>
+<h3>Select a Poll</h3>
+
+<div class="classCenter">
+    {{# each showPoll }}
+        {{# each this.polls }}
+            <form action="/selectedPollForm" method="POST">
+                <input type="text" name="theQuestion" value="{{this._id}}" style="display:none"/>
+                <input class="displayInputForm" type="submit" value="{{this.question}}"/>
+            </form>
+        {{/each}}
+    {{/each}}
+</div>

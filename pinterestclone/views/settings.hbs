@@ -1,0 +1,11 @@
+<h2>My Settings</h2>
+
+<form action="/profileForm" method="POST">
+    USERNAME: <br/><input type="text" name="username" value="{{hbsVar.username}}" placeholder="Name" readonly="true"/>
+    <br/><br/>
+    CITY: <br/><input type="text" name="userCity" value="{{hbsVar.userCity}}" placeholder="City"/>
+    <br/><br/>
+    STATE: <br/><input type="text" name="userState" value="{{hbsVar.userState}}" placeholder="State"/>
+    <br/><br/>
+    <input type="submit" value="Update"/>
+</form>

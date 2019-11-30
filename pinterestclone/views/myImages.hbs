@@ -1,0 +1,29 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+<div class="createDelete" style="display:flex; justify-content: space-around;">
+<a class="buttonA" href="addImage">Add a Image</a>
+<a class="buttonA" href="removeImage">Remove Image</a>
+</div>
+
+<h4>A list of my Images</h4>
+{{# each hbsVar.mylinks}}
+    <div class="formItem">
+        <div>{{this.theTitle}}</div>
+        <img src="{{this.theImage}}" id="{{this.theID}}" onerror="brokenImageLink({{this.theID}})"></img>
+        <div>Posted: {{this.thePostedUser}}</div>
+        <br/>
+    </div>
+{{/each}}
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<script>
+    var brokenImageLink = function(imgID){
+        document.getElementById(imgID).src = "https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150";
+    }
+</script>

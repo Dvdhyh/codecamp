@@ -1,0 +1,99 @@
+<div class="createDelete" style="display:flex; justify-content: space-around;">
+<a class="buttonA" href="addbook">Add a book</a>
+<a class="buttonA" href="removebook">Remove book</a>
+</div>
+
+<h4>A list of my books</h4>
+{{# each hbsVar.showselectedbook.bookDetails}}
+    {{#ifCond this.theOwner '==' ../hbsVar.currentUser}}
+        <div class="formItem">
+            <form action="/selectedbookForm" method="POST">
+                <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+            </form>
+            <p style="text-align:center">{{this.theTitle}}</p>
+        </div>
+    {{/ifCond}}
+{{/each}}
+<hr/>
+<h4>Books you have lent to others</h4>
+{{# each hbsVar.showselectedbook.bookDetails}}
+    {{#ifCond this.theStatus '!=' ""}}
+        {{#ifCond this.theOwner '==' ../hbsVar.currentUser}}
+            <div class="formItem">
+                <form action="/selectedbookForm" method="POST">
+                    <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                    <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                    <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+                </form>
+                <p style="text-align:center">{{this.theTitle}}</p>
+            </div>
+        {{/ifCond}}
+    {{/ifCond}}
+{{/each}}
+<hr/>
+<h4>Books that you are currently borrowing</h4>
+{{# each hbsVar.showselectedbook.bookDetails}}
+    {{#ifCond this.theStatus '==' ../hbsVar.currentUsername}}
+        {{#ifCond this.theOwner '!=' ../hbsVar.currentUser}}
+            <div class="formItem">
+                <form action="/selectedbookForm" method="POST">
+                    <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                    <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                    <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+                </form>
+                <p style="text-align:center">{{this.theTitle}}</p>
+                {{#ifCond this.askReturn '==' "OwnerRequested"}}
+                    <p>The owner has request the return of this book at your earilest convenience</p>
+                {{/ifCond}}
+            </div>
+        {{/ifCond}}
+    {{/ifCond}}
+{{/each}}
+<hr/>
+<h4>Books people have request pending</h4>
+{{# each hbsVar.showselectedbook.bookDetails}}
+    {{#ifCond this.theStatus '==' ""}}
+        {{#ifCond this.theOwner '==' ../hbsVar.currentUser}}
+            {{#ifCond this.theRequestUser 'notempty' 0}}
+                <div class="formItem">
+                    <form action="/selectedbookForm" method="POST">
+                        <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                        <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                        <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+                    </form>
+                    <p style="text-align:center">{{this.theTitle}}</p>
+                </div>
+            {{/ifCond}}
+        {{/ifCond}}
+    {{/ifCond}}
+{{/each}}
+<hr/>
+<h4>Books you have Requested</h4>
+{{# each hbsVar.showselectedbook.bookDetails}}
+    {{#ifCond this.theStatus '==' ""}}
+        {{#ifCond this.theOwner '!=' ../hbsVar.currentUser}}
+            {{#ifCond this.theRequestUser 'findStr' ../hbsVar.currentUser}}
+                <div class="formItem">
+                    <form action="/selectedbookForm" method="POST">
+                        <input type="text" name="theTitle" value="{{this._id}}" style="display:none"/>
+                        <input type="text" name="theOwner" value="{{this.theOwner}}" style="display:none"/>
+                        <input type="image" class="inputImage" src="{{this.theImage}}" alt="{{this.theTitle}}" />
+                    </form>
+                    <p style="text-align:center">{{this.theTitle}}</p>
+                </div>
+            {{/ifCond}}
+        {{/ifCond}}
+    {{/ifCond}}
+{{/each}}
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>

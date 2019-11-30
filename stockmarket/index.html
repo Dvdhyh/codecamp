@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="./mycss.css">
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <title>Stock Market</title>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="other">
+        <h1>Stock Market Value</h1>
+        <p>Grabs the closing value for each company for 1 year</p>
+    </div>
+    <br/>
+
+    <div id="d3area"></div>
+
+    <br/>
+    <div class="other">
+        <input type="text" ng-keyup="onKey($event)" ng-model="theInsert">
+
+        <p>For example: Type "goog" and press "Enter" for google details</p>
+
+        <div id="holdSymbols"></div>
+        <!--<div>{{theInput}}</div>-->
+    </div>
+
+    <script>
+    angular.module("myApp", []).controller("myCtrl", function($scope, $compile){
+
+
+        var width = 800, height = 600;
+        var group1 = {};
+        var getTickDate = [];
+        var dateArray = [];
+        var holdAllValues = {};
+        var doOnce = true;
+        var getDataRange = 260;
+
+        var mapScale = function(s1, s2, s11, s22, num){
+            return num * (s22 -s11)/(s2-s1);
+        }
+
+        var getRandColor = function(){
+    		return "rgb("+Math.floor(Math.random()*226)+","+Math.floor(Math.random()*226)+","+Math.floor(Math.random()*226)+")";
+    	}
+
+        var createElement = function(color, symbol){
+            return `<div class='symbolButtons' id='element`+symbol+`' style='background-color:`+color+`'>
+                <p class='classSymbol'>`+symbol+`</p>
+                <p id='closeButton' ng-click='onClickX($event)'>X</p>
+            </div>`;
+        }
+
+        $scope.onClickX = function($event){
+            //Grab the parent node's id which is "element" + symbol
+            let symbol = $event.target.parentNode.id.slice(7);
+
+            socket.emit('delete stock', symbol);
+        }
+
+        var DisplayTextInfo = function(theIndex, theData){
+            d3.select("#currentDate")
+                .text(theData.substr(2,8));
+
+            let tempObj = Object.keys(holdAllValues);
+
+            let pixelHeight = 12;
+
+            for(let i=0; i < tempObj.length; i++){
+                d3.select("#tooltip"+tempObj[i])
+                    .attr("dy", (i+1)*pixelHeight)
+                    .text(tempObj[i] + ": " + holdAllValues[tempObj[i]][theIndex])
+            }
+        }
+
+        ///////////////////////////// D3 //////////////////////
+		var svg = d3.select("#d3area").append("svg")
+				.attr("width",width)
+				.attr("height",height)
+
+        //svg background
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "white");
+
+
+        var valueScale = d3.scaleLinear()
+				.domain([0, 1000])
+				.range([0,height-200])
+
+		var axisY = d3.axisTop()
+				.scale(valueScale)
+
+        var translateX = 50, translateY = height - 100;
+
+        svg.append("g")
+                .attr("id", "axisX")
+                .attr("transform", "translate("+translateX+","+translateY+")")
+
+        svg.append("g")
+                .attr("transform", "translate("+translateX+","+translateY+"), rotate(-90)")
+				.call(axisY);
+
+        //Draw a vertical line ( the line will move with mouse x position while over graph)
+        svg.append("line")
+            .attr("id", "theline")
+            .attr("x1", 50)
+            .attr("y1", 100)
+            .attr("x2", 50)
+            .attr("y2", translateY)
+            .attr("stroke", "blue")
+            .attr("opacity", 0.5)
+            .style("visibility","hidden")
+
+        //Tooltip to display current value based off mouse x pos
+        var textgroup = svg.append("g")
+            .append("text")
+            .attr("id", "theText")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("font-size", 15)
+
+        textgroup.append("tspan")
+                .attr("id", "currentDate")
+                .attr("x", 0)
+                .attr("dy", 0)
+
+
+        //Create an invisible rect for dimension of the graph (to display line when hovering)
+        svg.append("rect")
+            .attr("id", "theGraphArea")
+			.attr("width",width-100)
+			.attr("height",translateY-100)
+			.attr("x",translateX)
+			.attr("y",100)
+			.attr("fill", "red")
+			.attr("opacity", 0)
+			.on("mouseover", function(){
+				d3.select("#theline")
+					.style("visibility","visible")
+
+                d3.select("#theText")
+                    .style("visibility","visible")
+			})
+			.on("mouseout", function(){
+				d3.select("#theline")
+					.style("visibility","hidden")
+
+                d3.select("#theText")
+                    .style("visibility","hidden")
+			})
+
+        //////////////////////////////////////////////////////////
+
+        //Not specifying a URL in io().
+        //By default it connects to the host that serves the page
+        var socket = io();
+        $scope.theInput = [];
+        $scope.theInsert = "";
+
+        //capture "events" from the server
+        socket.on('getList', function(msg){
+            $scope.theInput = msg;
+            $scope.$apply();
+        });
+
+        socket.on('getStockData', function(symbol, msg, days, ticks){
+
+            var inputData;
+            var timeScale = d3.scaleLinear()
+                .domain([0, ticks])
+                .range([0,width-100])
+
+            //Get stock data gets called for every stock, but some info is the same for each stock
+            //This saves time by ignoring calls after the 1st stock
+            if(doOnce){
+                doOnce = false;
+
+                getDataRange = msg["Elements"][0]["DataSeries"]["close"]["values"].length;
+
+                dateArray = Object.values(msg.Dates);
+
+                //Linear Scale the ticks in comparsion with the amount of days
+                for(let i=0; i < ticks; i++){
+                    getTickDate[i] = dateArray[ Math.floor(mapScale(0,ticks, 0, getDataRange, i)) ];
+                }
+
+                //Draw the axis based on the ticks
+                var axisX = d3.axisBottom()
+                    .scale(timeScale)
+                    .tickFormat(function(d){
+                        if(typeof(getTickDate[d]) == typeof("a"))
+                            return getTickDate[d].substr(2,8);
+                        else
+                            return (parseInt(getTickDate[0].substr(2,2))+1) + getTickDate[0].substr(4,6);
+                    });
+
+                svg.select("#axisX")
+                    .call(axisX)
+
+
+                //get day from graph from mouse x position
+                var dataScale = d3.scaleLinear()
+                        .domain([translateX, width-100 + translateX])
+                        .range([0, getDataRange])
+
+                //Update text based on mouse movement
+                d3.select("#theGraphArea")
+                    .on("mousemove", function(){
+                        //Update the line x position from the mouse x pos
+                        d3.select("#theline")
+                            .attr("x1",d3.mouse(this)[0])
+                            .attr("x2",d3.mouse(this)[0])
+
+                        let tempIndex = Math.floor(dataScale(d3.mouse(this)[0]));
+
+                        d3.select("#theText")
+                            .attr("transform", "translate("+(d3.mouse(this)[0]+25)+","+ d3.mouse(this)[1]+")")
+
+
+                        DisplayTextInfo(tempIndex, dateArray[tempIndex])
+                    })
+            }
+
+            //Check if the element hasn't been created yet
+            if(document.getElementById("element"+symbol) === null){
+
+                inputData = msg["Elements"][0]["DataSeries"]["close"]["values"];
+                //console.log(inputData);
+
+                holdAllValues[symbol] = inputData;
+
+                group1[symbol] = svg.append("g").attr("id", symbol);
+
+                var line = d3.line()
+                    .x(function(d, i){return timeScale(i)/(getDataRange/ticks)+translateX; })
+                    .y(function(d){return translateY-valueScale(d); })
+
+                var theColor = getRandColor();
+
+                // draw the line on the svg
+                group1[symbol].selectAll("path")
+            		.data([inputData])
+            			.enter()
+            			.append("path")
+            			.attr("d", line)
+            			.attr("fill", "none")
+            			.attr("stroke", theColor)
+            			.attr("stroke-width", "2");
+
+                //Create string for element button
+                var myElement = createElement(theColor, symbol);
+
+                //Create button for symbol
+		        angular.element(document.querySelector("#holdSymbols")).append($compile(myElement)($scope));
+
+                textgroup.append("tspan")
+                    .attr("id", "tooltip"+symbol)
+                    .attr("x", 0)
+                    .attr("dy", 0)
+                    .attr("font-size", 15)
+                    .attr("fill", theColor)
+                    .text(0)
+            }
+
+            $scope.$apply();
+        });
+
+        socket.on('insert stock', function(msg){
+            $scope.theInput = msg;
+            $scope.$apply();
+        });
+
+        socket.on('delete stock', function(symbol, msg){
+            $scope.theInput = msg;
+
+            //Remove button from html
+            angular.element(document.querySelector("#element"+symbol)).remove();
+
+            //remove d3 path from svg graph
+            svg.select("#"+symbol).remove();
+            delete group1[symbol];
+
+            delete holdAllValues[symbol];
+
+            //Remove text from tooltip
+            svg.select("#tooltip"+symbol).remove();
+
+            $scope.$apply();
+        });
+
+///////////////////////////////////////////////////////////////////////
+
+        //If "enter" button was pressed
+        var getKeyboardEventResult = function (keyEvent){
+            return keyEvent.keyCode == 13;
+        };
+
+        //Input GUI one
+        $scope.onKey = function ($event) {
+            if(getKeyboardEventResult($event)){
+                if($scope.theInsert != ""){
+                    if($scope.theInput.indexOf($scope.theInsert) == -1){
+                        socket.emit('insert stock', $scope.theInsert);
+                        $scope.theInsert = "";
+                    }
+                }
+            }
+        };
+    });
+    </script>
+</body>
+</html>
