@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "express": "^4.14.0",
-    "mongodb": "^2.2.22"
+    "mongodb": "^3.6.1"
   },
   "author": "dvdhyh",
   "license": "ISC"
